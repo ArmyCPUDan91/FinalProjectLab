@@ -1,0 +1,39 @@
+import csv
+import os
+import re
+
+# Open the CSV file and read the data
+with open('city-of-seattle-2012-cost-dollars.csv') as csvfile:
+    reader = csv.DictReader(csvfile)
+
+    # Create a list to store the department and their expenses
+    department_expenses = []
+
+    # Loop through the data and store the department name and the corresponding costs in the list
+    for row in reader:
+        department = row['Department']
+        expense = row['2012 Actual']
+
+        # Check if the expense is not empty
+        if expense:
+            try:
+                expense = float(expense)
+
+                # Add the department and its expenses to the list
+                department_expenses.append([department, expense])
+            except ValueError:
+                # Handle cases where the expense value cannot be converted to a float
+                print(f"Invalid expense value '{expense}' for department '{department}'")
+
+    # Print the department name and the corresponding costs in a clean format
+    for department, expense in department_expenses:
+        # Format the costs using regex to add commas and a dollar sign
+        formatted_expense = '$' + re.sub(r'(\d{3})(?=\d)', r'\1,', '{:.2f}'.format(expense))
+
+        # Print the department name and the corresponding expense in a clean format
+        print(f'{department}\t{formatted_expense}')
+
+# Close the CSV file
+csvfile.close()
+
+print("Thanks for coming to Seattle!")
